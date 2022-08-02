@@ -7,13 +7,12 @@ import (
 	todo "github.com/cucumberjaye/go_todo"
 	"github.com/cucumberjaye/go_todo/pkg/repository"
 	"github.com/dgrijalva/jwt-go"
+	"os"
 	"time"
 )
 
 const (
-	salt       = "adsgasrw1234ege"
-	tokenTTL   = 12 * time.Hour
-	signingKey = "adsfad325adsf2fd"
+	tokenTTL = 12 * time.Hour
 )
 
 type tokenClaims struct {
@@ -48,7 +47,7 @@ func (s *AuthService) GenerateToken(username, password string) (string, error) {
 		user.Id,
 	})
 
-	return token.SignedString([]byte(signingKey))
+	return token.SignedString([]byte(os.Getenv("SIGNING_KEY")))
 }
 
 func (s *AuthService) ParseToken(accessToken string) (int, error) {
@@ -57,7 +56,7 @@ func (s *AuthService) ParseToken(accessToken string) (int, error) {
 			return nil, errors.New("invalid signing method")
 		}
 
-		return []byte(signingKey), nil
+		return []byte(os.Getenv("SIGNING_KEY")), nil
 	})
 	if err != nil {
 		return 0, err
@@ -75,5 +74,5 @@ func generatePasswordHash(password string) string {
 	hash := sha1.New()
 	hash.Write([]byte(password))
 
-	return fmt.Sprintf("%x", hash.Sum([]byte(salt)))
+	return fmt.Sprintf("%x", hash.Sum([]byte(os.Getenv("SALT"))))
 }

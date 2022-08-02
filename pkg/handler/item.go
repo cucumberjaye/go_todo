@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	todo "github.com/cucumberjaye/go_todo"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -79,6 +80,7 @@ func (h *Handler) getItemById(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, item)
+	fmt.Println(item)
 }
 
 func (h *Handler) updateItem(c *gin.Context) {
